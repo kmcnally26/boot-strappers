@@ -1,11 +1,22 @@
-## Custom kickstart file to rebuild the puppet master. Puppet 3.4 on RHEL6. With papply setup.
-## We can rebuild all hosts with puppet/dns working. But not the puppet master itself.
-## If EVERYTHING was gone. First get a minimal install cd to iLO at the DC. Put this file on INET.
-## RHEL6. Press TAB, append to existing line linux ks=http://webserver/thisfile
-## All the old certs that are on clients will be no good so delete them
-## Add: url, hostname, network settings, repos, puppet config location.
-## Below works for this project.
+#!/bin/bash
+#
+# Desc: Custom kickstart file to rebuild the puppet master. Puppet 3.4 on RHEL6. With papply setup.
+# We can rebuild all hosts with puppet/dns working. But not the puppet master itself.
+# If EVERYTHING was gone. First get a minimal install cd to iLO at the DC. Put this file on INET.
+# RHEL6. Press TAB, append to existing line linux ks=http://webserver/thisfile
+# All the old certs that are on clients will be no good so delete them
+# Add: url, hostname, network settings, repos, puppet config location.
+# Below works for this project.
+# Date: 2014-05-03
+# Author: <kevin.mcnally@lastminute.com>
+# System: RHEL6
 
+# Verbose output.
+# set -x
+# Exit if anything fails
+# set -e
+# Uncomment for no output.
+#exec > /dev/null 2>&1
 
 install 
 text
