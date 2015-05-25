@@ -1,4 +1,3 @@
-#
 #!/bin/bash
 #
 # Desc: Kickstart PXE and DHCP lease
