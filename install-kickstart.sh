@@ -11,17 +11,12 @@ set -x
 # Exit if anything fails
 #set -e
 # Uncomment for no output.
-#exec > /dev/null 2>&1
-
-## Basic logging
-#  LOGFILE=/path/to/logfile
-#  exec >>  $LOGFILE 2>&1
-#  echo
-#  date
+#exec > /dev/null 
 
 ## Environment 
 RETVAL=0
 
+## Set host detail here
 MYIP=172.16.105.130
 MYHOSTNAME=kickstart
 MYDOMAIN=example.com
