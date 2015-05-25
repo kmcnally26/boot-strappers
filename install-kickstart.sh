@@ -17,14 +17,11 @@ set -x
 RETVAL=0
 
 ## Set host detail here
-MYIP=172.16.105.130
-MYHOSTNAME=kickstart
-MYDOMAIN=example.com
-FQDN=$MYHOSTNAME.$MYDOMAIN
-
-clear
-echo "MYIP=$MYIP"
-echo "FQDN=$FQDN"
+clear 
+echo MYIP=172.16.105.130
+echo MYHOSTNAME=kickstart
+echo MYDOMAIN=example.com
+echo "FQDN=$MYHOSTNAME.$MYDOMAIN"
 echo "Shall I carry on? "
   read -p '#> ' ANSWER
     if [ ${ANSWER} != y ] ; then
