@@ -1,17 +1,18 @@
 #
-# This file is managed by puppet.
-#
-
 #!/bin/bash
+#
+# Desc: Kickstart PXE and DHCP lease
+#
+# Date: 2014-03-05
+# Author: <kevin.mcnally@lastminute.com>
+# System: RHEL6
 
-### Create kickstart, PXE and dhcp
-### 2014-03-05
-###
-
-## Variables we need
-## $1 the fqdn
-## $2 the IP address
-## $3 the MAC address
+# Verbose output.
+# set -x
+# Exit if anything fails
+set -e
+# Uncomment for no output.
+#exec > /dev/null 2>&1
 
 ## We need 3 arguments
 if [ $# -ne 3 ]
