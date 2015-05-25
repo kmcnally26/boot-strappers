@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Desc: Build a kickstart server on a clean install.
+# Desc: Kickstart DHCP PXE server on a clean install.
 #
 # Date: 2015-05-23
 # Author: <kevin.mcnally@lastminute.com>
