@@ -55,7 +55,6 @@ systemctl restart httpd.service
 
 echo TFTP SETUP
 DISTRO='CentOS-7.1-x86_64'
-cd /var/lib/tftpboot/
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
 mkdir -p /var/lib/tftpboot/pxelinux.cfg/boot
