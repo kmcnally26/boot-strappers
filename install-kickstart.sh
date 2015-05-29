@@ -47,8 +47,8 @@ yum install dhcp syslinux tftp-server xinetd httpd -y
 
 echo HTTP MEDIA SETUP - MOUNTED ONLY
 HTTPMEDIA='/var/www/html/kickstart'
-mkdir -p ${HTTPMEDIA}{
-mount -o loop /dev/cdrom ${HTTPMEDIA}{
+mkdir -p ${HTTPMEDIA}
+mount -o loop /dev/cdrom ${HTTPMEDIA}
 systemctl enable httpd.service
 systemctl restart httpd.service
 
@@ -59,8 +59,8 @@ cd /var/lib/tftpboot/
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
 mkdir -p /var/lib/tftpboot/pxelinux.cfg/boot
-cp ${HTTPMEDIA}{/images/pxeboot/vmlinuz  /var/lib/tftpboot/pxelinux.cfg/boot/${DISTRO}{-vmlinuz
-cp ${HTTPMEDIA}{/images/pxeboot/initrd.img  /var/lib/tftpboot/pxelinux.cfg/boot/${DISTRO}{-initrd.img
+cp ${HTTPMEDIA}{/images/pxeboot/vmlinuz  /var/lib/tftpboot/pxelinux.cfg/boot/${DISTRO}-vmlinuz
+cp ${HTTPMEDIA}{/images/pxeboot/initrd.img  /var/lib/tftpboot/pxelinux.cfg/boot/${DISTRO}-initrd.img
 
 cat << EOF > /var/lib/tftpboot/pxelinux.cfg/default
 PROMPT 0
