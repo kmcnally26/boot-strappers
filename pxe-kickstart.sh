@@ -13,6 +13,8 @@ set -e
 # Uncomment for no output.
 #exec > /dev/null 2>&1
 
+RETVAL=0
+
 ## We need 3 arguments
 if [ $# -ne 3 ]
   then
@@ -188,4 +190,8 @@ echo "Created Kickstart file: $KICKSTART_DIR/$1-ks"
 echo "Added entry to ${DHCP_CONF_FILE} for ${1}"
 echo
 
-exit 0
+exit ${RETVAL}
+# EOF
+
+ChangeLog:
+Adding top section with prompt but not tested.
