@@ -20,12 +20,25 @@ if [ $# -ne 3 ]
     echo 'test.example.com 172.16.105.133 00:44:D6:AC:12:88' ; exit 1
 fi
 
-## Variables we will use
+## Set build detail here
 KICKSTART_DIR=/var/www/html/kickstart
 PXELINUX_DIR=/var/lib/tftpboot/pxelinux.cfg
 DHCP_CONF_FILE=/etc/dhcp/dhcpd.conf
 PUPPET_MASTER=puppet.example.com
-ROOT_PW='$6$LV1vaaVuiYwlYGaN$iFg4EidI2vKpmunOWQwCM9xQ96CkmxEmON1RoUCvgeE0Wjt5BlA/HOWwOIDXOJ9SjEyDQgzaokk1t64ThpANq0'
+ROOT_PW=password
+
+clear
+echo "KICKSTART_DIR=$KICKSTART_DIR"
+echo "PXELINUX_DIR=$PXELINUX_DIR"
+echo "DHCP_CONF_FILE=$DHCP_CONF_FILE"
+echo "PUPPET_MASTER=$PUPPET_MASTER"
+echo "ROOT_PW=$ROOT_PW"
+echo "Shall I carry on? "
+  read -p '#> ' ANSWER
+    if [ ${ANSWER} != y ] ; then
+      echo Aborting
+      exit 1
+    fi
 
 
 echo Checking DHCP config for conflicting entries
