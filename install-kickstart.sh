@@ -128,3 +128,9 @@ EOF
 
 systemctl enable dhcpd.service
 systemctl restart dhcpd.service
+
+exit ${RETVAL}
+# EOF
+
+ChangeLog:
+This is now tested. DHCP needs an interface listening on the subnet or wont start :-)
