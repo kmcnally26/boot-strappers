@@ -17,11 +17,31 @@ set -x
 RETVAL=0
 
 ## Set host detail here
-clear 
-echo MYIP=172.16.105.130
-echo MYHOSTNAME=kickstart
-echo MYDOMAIN=example.com
+MYIP=172.16.105.130
+MYHOSTNAME=kickstart
+MYDOMAIN=example.com
+
+## Set DHCP
+DHCPSUBNET=172.16.105.0
+DHCPMASK=255.255.255.0
+NAMESERVER=172.16.105.150
+
+## Set distro
+DISTRO='CentOS-7.1-x86_64'
+
+## Set http path
+HTTPMEDIA='/var/www/html/kickstart'
+
+clear
+echo "MYIP=$MYIP"
+echo "MYHOSTNAME=$MYHOSTNAME"
+echo "MYDOMAIN=$MYDOMAIN"
 echo "FQDN=$MYHOSTNAME.$MYDOMAIN"
+echo "DHCPSUBNET=$DHCPSUBNET"
+echo "DHCPMASK=$DHCPMASK"
+echo "NAMESERVER=$NAMESERVER"
+echo "DISTRO=$DISTRO"
+echo "HTTPMEDIA=$HTTPMEDIA"
 echo "Shall I carry on? "
   read -p '#> ' ANSWER
     if [ ${ANSWER} != y ] ; then
@@ -42,11 +62,10 @@ echo Disable firewall and SElinux
   fi
 
 echo INSTALL PACKAGES
-yum install dhcp syslinux tftp-server xinetd httpd -y
+yum install dhcp syslinux tftp-server xinetd httpd vim -y
 
 
 echo HTTP MEDIA SETUP - MOUNTED ONLY
-HTTPMEDIA='/var/www/html/kickstart'
 mkdir -p ${HTTPMEDIA}
 mount -o loop /dev/cdrom ${HTTPMEDIA}
 systemctl enable httpd.service
@@ -54,7 +73,6 @@ systemctl restart httpd.service
 
 
 echo TFTP SETUP
-DISTRO='CentOS-7.1-x86_64'
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
 mkdir -p /var/lib/tftpboot/pxelinux.cfg/boot
@@ -78,10 +96,6 @@ systemctl enable xinetd.service
 systemctl restart xinetd.service
 
 echo DHCP SETUP
-BUILDSUBNET=172.16.105.0
-BUILDMASK=255.255.255.0
-NAMESERVER=172.16.105.150
-
 cat << EOF > /etc/dhcp/dhcpd.conf
 # DHCP options
 allow booting;
@@ -97,7 +111,7 @@ authoritative;
 log-facility local7;
 
 # Subnet settings
-subnet $BUILDSUBNET netmask $BUILDMASK {
+subnet $DHCPSUBNET netmask $DHCPMASK {
     next-server $MYIP;
     filename "pxelinux.0";
     option domain-name-servers $NAMESERVER;
@@ -114,5 +128,3 @@ EOF
 
 systemctl enable dhcpd.service
 systemctl restart dhcpd.service
-
-
