@@ -129,6 +129,9 @@ EOF
 systemctl enable dhcpd.service
 systemctl restart dhcpd.service
 
+echo Downloading pxe-kickstart.sh
+# curl ........
+
 exit ${RETVAL}
 # EOF
 
