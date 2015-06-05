@@ -23,7 +23,7 @@ RETVAL=0
   done
   
   if ! (grep puppet /etc/hosts) ; then
-    echo 'Hosts file not set'
+    echo 'Hosts file does not have a puppet entry'
     exit 1
   fi
   
@@ -35,7 +35,7 @@ RETVAL=0
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
 
 ## Repos and packages 
-yum install -y http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+yum install -y epel-release
 yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
 yum install -y puppet puppet-server facter hiera rubygems 
 gem install hiera
