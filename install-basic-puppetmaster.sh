@@ -104,6 +104,17 @@ cat << EOF > /etc/puppet/data/global.yaml
 test_class::string: 'hiera-test-file'
 EOF
 
+echo creating puppet apply
+cat << EOF > /usr/local/bin/papply
+#!/bin/bash
+
+puppet apply --verbose  --modulepath=/etc/puppet/environments/production/modules/ \
+                        /etc/puppet/environments/production/manifests/nodes/nodes.pp $1
+
+EOF
+
+chmod 755 /usr/local/bin/papply
+
 ## Create puppet CA
 systemctl stop puppetmaster.service
 puppet master --verbose --no-daemonize &
