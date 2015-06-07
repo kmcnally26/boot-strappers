@@ -30,7 +30,7 @@ NAMESERVER=172.16.105.150
 DISTRO='CentOS-7.1-x86_64'
 
 ## Set http path
-HTTPMEDIA='/var/www/html/kickstart'
+HTTPMEDIA='/var/www/html/kickstart/centos'
 
 clear
 echo "MYIP=$MYIP"
@@ -86,7 +86,7 @@ ONTIMEOUT install_${DISTRO}
 LABEL install_${DISTRO}
     MENU LABEL ${DISTRO}
     KERNEL boot/${DISTRO}-vmlinuz  
-    APPEND initrd=boot/${DISTRO}-initrd.img method=http://${MYIP}/kickstart/ devfs=nomount ip=dhcp
+    APPEND initrd=boot/${DISTRO}-initrd.img method=http://${MYIP}/kickstart/centos/ devfs=nomount ip=dhcp
 
 EOF
 
