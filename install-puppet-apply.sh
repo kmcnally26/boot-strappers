@@ -24,9 +24,11 @@ RETVAL=0
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
 
 ## Repo and package
-yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
-yum install -y puppet  
-
+  if ! (rpm -qa puppet); then
+    yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
+    yum install -y puppet  
+  fi
+  
 ## Create tree
 mkdir -pv /etc/puppet/{data,environments/production/{manifests/nodes,modules/test_class/{files,manifests,templates}}}
 
