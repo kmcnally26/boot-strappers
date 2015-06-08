@@ -129,8 +129,9 @@ EOF
 systemctl enable dhcpd.service
 systemctl restart dhcpd.service
 
-echo Downloading pxe-kickstart.sh
-# curl ........
+echo Downloading pxe-kick.sh
+curl -sf -o /root/pxe-kick.sh -L -k https://raw.githubusercontent.com/kmcnally26/boot-strappers/master/pxe-kick.sh
+chmod 755 /root/pxe-kick.sh
 
 exit ${RETVAL}
 # EOF
