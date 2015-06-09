@@ -11,26 +11,27 @@ set -x
 # Exit if anything fails
 #set -e
 # Uncomment for no output.
-#exec > /dev/null 
+#exec > /dev/null
 
-## Environment 
+## Environment
 RETVAL=0
 
 ## Set host detail here
-MYIP=172.16.105.130
-MYHOSTNAME=kickstart
+MYIP=172.16.105.131
+MYHOSTNAME=freeipa001
 MYDOMAIN=example.com
+FQDN=$MYHOSTNAME.$MYDOMAIN
 
 ## Set DHCP
 DHCPSUBNET=172.16.105.0
 DHCPMASK=255.255.255.0
-NAMESERVER=172.16.105.150
+NAMESERVER=172.16.105.131
 
 ## Set distro
 DISTRO='CentOS-7.1-x86_64'
 
 ## Set http path
-HTTPMEDIA='/var/www/html/kickstart/centos'
+DOCROOT='/var/www/html/kickstart'
 
 clear
 echo "MYIP=$MYIP"
@@ -41,7 +42,7 @@ echo "DHCPSUBNET=$DHCPSUBNET"
 echo "DHCPMASK=$DHCPMASK"
 echo "NAMESERVER=$NAMESERVER"
 echo "DISTRO=$DISTRO"
-echo "HTTPMEDIA=$HTTPMEDIA"
+echo "DOCROOT=$DOCROOT"
 echo "Shall I carry on? "
   read -p '#> ' ANSWER
     if [ ${ANSWER} != y ] ; then
@@ -49,9 +50,9 @@ echo "Shall I carry on? "
       exit 1
     fi
 
-echo Disable firewall and SElinux 
+echo Disable firewall and SElinux
   if !( grep 'SELINUX=disabled' /etc/sysconfig/selinux ); then
-    sed 's/SELINUX=[a-z]*/SELINUX=disabled/' /etc/sysconfig/selinux -i 
+    sed 's/SELINUX=[a-z]*/SELINUX=disabled/' /etc/sysconfig/selinux -i
   fi
 
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
@@ -66,8 +67,15 @@ yum install dhcp syslinux tftp-server xinetd httpd vim -y
 
 
 echo HTTP MEDIA SETUP - MOUNTED ONLY
-mkdir -p ${HTTPMEDIA}
-mount -o loop /dev/cdrom ${HTTPMEDIA}
+mkdir -p ${DOCROOT}/centos
+mount -o loop /dev/cdrom ${DOCROOT}/centos
+cat << EOF > /etc/httpd/conf.d/kickstart.conf
+<VirtualHost *:80>
+    ServerName ${FQDN}
+    DocumentRoot ${DOCROOT}
+</VirtualHost>
+EOF
+
 systemctl enable httpd.service
 systemctl restart httpd.service
 
@@ -75,9 +83,9 @@ systemctl restart httpd.service
 echo TFTP SETUP
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
-mkdir -p /var/lib/tftpboot/pxelinux.cfg/boot
-cp ${HTTPMEDIA}{/images/pxeboot/vmlinuz  /var/lib/tftpboot/pxelinux.cfg/boot/${DISTRO}-vmlinuz
-cp ${HTTPMEDIA}{/images/pxeboot/initrd.img  /var/lib/tftpboot/pxelinux.cfg/boot/${DISTRO}-initrd.img
+mkdir -p /var/lib/tftpboot/boot
+cp ${DOCROOT}/centos/images/pxeboot/vmlinuz  /var/lib/tftpboot/boot/${DISTRO}-vmlinuz
+cp ${DOCROOT}/centos/images/pxeboot/initrd.img  /var/lib/tftpboot/boot/${DISTRO}-initrd.img
 
 cat << EOF > /var/lib/tftpboot/pxelinux.cfg/default
 PROMPT 0
@@ -85,8 +93,8 @@ TIMEOUT 1
 ONTIMEOUT install_${DISTRO}
 LABEL install_${DISTRO}
     MENU LABEL ${DISTRO}
-    KERNEL boot/${DISTRO}-vmlinuz  
-    APPEND initrd=boot/${DISTRO}-initrd.img method=http://${MYIP}/kickstart/centos/ devfs=nomount ip=dhcp
+    KERNEL boot/${DISTRO}-vmlinuz
+    APPEND initrd=boot/${DISTRO}-initrd.img inst.ks=http://${MYIP}/kickstart/${FQDN}-ks devfs=nomount ip=dhcp
 
 EOF
 
