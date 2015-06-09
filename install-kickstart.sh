@@ -88,13 +88,10 @@ cp ${DOCROOT}/centos/images/pxeboot/vmlinuz  /var/lib/tftpboot/boot/${DISTRO}-vm
 cp ${DOCROOT}/centos/images/pxeboot/initrd.img  /var/lib/tftpboot/boot/${DISTRO}-initrd.img
 
 cat << EOF > /var/lib/tftpboot/pxelinux.cfg/default
-PROMPT 0
-TIMEOUT 1
-ONTIMEOUT install_${DISTRO}
-LABEL install_${DISTRO}
-    MENU LABEL ${DISTRO}
+DEFAULT ${DISTRO}
+LABEL ${DISTRO}
     KERNEL boot/${DISTRO}-vmlinuz
-    APPEND initrd=boot/${DISTRO}-initrd.img inst.ks=http://${MYIP}/kickstart/${FQDN}-ks devfs=nomount ip=dhcp
+    APPEND initrd=boot/${DISTRO}-initrd.img inst.ks=http://${MYIP}/kickstart/\${1}-ks devfs=nomount ip=dhcp
 
 EOF
 
