@@ -89,6 +89,8 @@ yum install -y httpd
 systemctl enable httpd.service
 systemctl restart httpd.service
 
+echo Dont forget the gems for r10k
+
 echo 'At this point in time you need to attach your usbstick to the laptop and cp the repos/ directory to /var/www/html/'
 echo "Press y when this is done and I will carry on building this shit? "
   read -p '#> ' ANSWER
