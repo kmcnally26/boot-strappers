@@ -29,7 +29,7 @@ echo Disable firewall and SElinux
 
 ## Execute 
     
-echo 'At this point in time you need you to attach the usbstick and cp the isos to /home/syseng/Downloads/'
+echo 'At this point in time you need you to attach the usbstick to the laptop and cp the isos to /home/syseng/Downloads/'
 echo '/home/syseng/Downloads/CentOS-7-x86_64-Everything-1503-01.iso'
 echo '/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD1.iso'
 echo '/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD2.iso'
@@ -68,7 +68,7 @@ yum install -y httpd
 systemctl enable httpd.service
 systemctl restart httpd.service
 
-echo 'At this point in time you need to attach your usb and cp the repos/ directory to /var/www/html/'
+echo 'At this point in time you need to attach your usbstick to the laptop and cp the repos/ directory to /var/www/html/'
 echo "Press y when this is done and I will carry on building this shit? "
   read -p '#> ' ANSWER
     if [ ${ANSWER} != y ] ; then
