@@ -29,7 +29,10 @@ echo Disable firewall and SElinux
 
 ## Execute 
     
-echo 'At this point in time you need to attach your usb and cp the isos to /home/syseng/Downloads/'
+echo 'At this point in time you need you to attach the usbstick and cp the isos to /home/syseng/Downloads/'
+echo '/home/syseng/Downloads/CentOS-7-x86_64-Everything-1503-01.iso'
+echo '/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD1.iso'
+echo '/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD2.iso'
 echo "Press y when this is done and I will carry on building this shit? "
   read -p '#> ' ANSWER
     if [ ${ANSWER} != y ] ; then
@@ -40,8 +43,8 @@ echo "Press y when this is done and I will carry on building this shit? "
 cat << EOF >> /etc/fstab
 ## isos
 /home/syseng/Downloads/CentOS-7-x86_64-Everything-1503-01.iso /var/www/html/repos/centos/7/iso/  iso9660 defaults 0 0
-#/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD1.iso /var/www/html/repos/centos/6/iso1/         iso9660 defaults 0 0
-#/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD2.iso /var/www/html/repos/centos/6/iso2          iso9660 defaults 0 0
+/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD1.iso /var/www/html/repos/centos/6/iso1/         iso9660 defaults 0 0
+/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD2.iso /var/www/html/repos/centos/6/iso2          iso9660 defaults 0 0
 
 EOF
 
