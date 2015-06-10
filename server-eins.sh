@@ -27,6 +27,23 @@ echo Disable firewall and SElinux
 
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
 
+
+## Check network and hostname
+
+cat << EOF > /etc/hosts
+
+EOF
+
+cat << EOF > /etc/hostname
+
+EOF
+
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-----
+
+EOF
+
+
+
 ## Execute 
     
 echo 'At this point in time you need you to attach the usbstick to the laptop and cp the isos to /home/syseng/Downloads/'
