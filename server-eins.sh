@@ -46,6 +46,7 @@ cat << EOF > /etc/sysconfig/network-scripts/ifcfg-----
 
 EOF
 
+## Set IPv6 settings for IPA
 
 
 ## Execute 
