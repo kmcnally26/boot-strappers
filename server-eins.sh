@@ -124,6 +124,12 @@ systemctl restart httpd.service
 echo Do NOT install any packages/updates for CentOS OS  from the inet
 echo Use only the provided isos until we get pulp up and running.
 
+echo Installing IPA master
+
+cat /etc/ipa/default
+
+echo You should now reboot 
+
 exit ${RETVAL}
 # EOF
 
