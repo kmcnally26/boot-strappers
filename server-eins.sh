@@ -28,9 +28,21 @@ echo Disable firewall and SElinux
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
 
 ## Execute 
-
-
-yum install httpd 
+echo 'At this point in time you need to attach your usb and cp the repos/ directory to /var/www/html/'
+echo "Press y when this is done and I will carry on building this shit? "
+  read -p '#> ' ANSWER
+    if [ ${ANSWER} != y ] ; then
+      echo Aborting
+      exit 1
+    fi
+    
+echo 'At this point in time you need to attach your usb and cp the isos to /home/syseng/Downloads/'
+echo "Press y when this is done and I will carry on building this shit? "
+  read -p '#> ' ANSWER
+    if [ ${ANSWER} != y ] ; then
+      echo Aborting
+      exit 1
+    fi
 
 cat << EOF >> /etc/fstab
 ## isos
@@ -40,6 +52,8 @@ cat << EOF >> /etc/fstab
 
 EOF
 
+echo mounting isos
+mount -a
 
 cat << EOF > /etc/yum.repos.d/puppet-dependencies.repo
 [puppet-dependencies]
@@ -68,7 +82,10 @@ gpgcheck=0
 
 EOF
 
-
+echo configuring web server for repos
+yum install -y httpd 
+systemctl enable httpd.service
+systemctl restart httpd.service
 
 exit ${RETVAL}
 # EOF
