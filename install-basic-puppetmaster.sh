@@ -30,6 +30,7 @@ RETVAL=0
 ## Disable firewall and SElinux 
   if !( grep 'SELINUX=disabled' /etc/sysconfig/selinux ); then
     sed 's/SELINUX=[a-z]*/SELINUX=disabled/' /etc/sysconfig/selinux -i 
+    setenforce 0
   fi
 
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
