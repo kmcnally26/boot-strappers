@@ -34,6 +34,10 @@ cat << EOF > /etc/hosts
 
 EOF
 
+cat << EOF > /etc/resolv.conf
+
+EOF
+
 cat << EOF > /etc/hostname
 
 EOF
