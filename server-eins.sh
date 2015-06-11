@@ -31,18 +31,41 @@ echo Disable firewall and SElinux
 ## Check network and hostname
 
 cat << EOF > /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.120.0.15 server-eins.ams1.lastminute.com server-eins
 
 EOF
 
 cat << EOF > /etc/resolv.conf
+nameserver 127.0.0.1
 
 EOF
 
 cat << EOF > /etc/hostname
+server-eins.ams1.lastminute.com
 
 EOF
 
-cat << EOF > /etc/sysconfig/network-scripts/ifcfg-----
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-XXXXXXXXXX
+TYPE=Ethernet
+BOOTPROTO=static
+IPADDR=10.120.0.15
+NETMASK=255.255.0.0
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+NAME=XXXXXXXXXX
+UUID=XXXXXXXXXXXXXX
+ONBOOT=yes
+HWADDR=XXXXXXXXXXXXXXX
+PEERDNS=yes
+PEERROUTES=yes
+IPV6_PEERDNS=yes
+IPV6_PEERROUTES=yes
 
 EOF
 
