@@ -80,6 +80,9 @@ EOF
 
 sysctl -p
 
+## Add user 
+if ! (id syseng) ;then useradd -m -p password syseng ; fi
+
 
 ## Execute 
     
