@@ -132,7 +132,7 @@ echo "Press y when this is done and I will carry on building this shit? "
       exit 1
     fi
 
-
+## Add all your repo files here for CentOS 6/7
 cat << EOF > /etc/yum.repos.d/puppet-dependencies.repo
 [puppet-dependencies]
 name=puppet dependencies repo
@@ -156,7 +156,7 @@ yum install -y httpd
 systemctl enable httpd.service
 systemctl restart httpd.service
 
-echo Do NOT install any packages/updates for CentOS OS  from the inet
+echo Do NOT install any packages/updates for CentOS OS from the inet
 echo Use only the provided isos until we get pulp up and running.
 
 echo Installing IPA master
