@@ -46,7 +46,16 @@ cat << EOF > /etc/sysconfig/network-scripts/ifcfg-----
 
 EOF
 
-## Set IPv6 settings for IPA
+## Set IPv6 settings for IPA Samba AD trusts
+
+cat << EOF > /etc/sysctl.d/ipv6.conf
+# Disable IPv6 interface but leave stack up
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.XXXXXXXXX.disable_ipv6 = 1
+
+EOF
+
+sysctl -p
 
 
 ## Execute 
