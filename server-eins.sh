@@ -160,12 +160,15 @@ echo Do NOT install any packages/updates for CentOS OS  from the inet
 echo Use only the provided isos until we get pulp up and running.
 
 echo Installing IPA master
-ipa-server-install --admin-password=password --ds-password=password \
---hostname=server-eins.ams1.lastminute.com \ 
-realm=AMS1.LASTMINUTE.COM -domain=ams1.lastminute.com \
---no-forwarders --setup-dns --no-ntp --idstart=50000 \
+ipa-server-install --admin-password=password --ds-password=password --hostname=server-eins.ams1.lastminute.com \ 
+realm=AMS1.LASTMINUTE.COM -domain=ams1.lastminute.com --no-forwarders --setup-dns --no-ntp --idstart=50000 \
 --mkhomedir  --unattended
 
+echo Start all IPA services on boot
+systemctl enable ipa.service
+
+echo 'Hows IPA looking?
+ipactl status
 cat /etc/ipa/default
 
 echo You should now reboot 
