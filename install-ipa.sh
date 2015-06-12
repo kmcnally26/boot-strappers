@@ -16,7 +16,7 @@ set -e
 ## Environment 
 RETVAL=0
 
-MYIP=10.120.0.15
+MYIP=172.16.105.133
 MYDOMAIN=ams1.lastminute.com
 MYHOSTNAME=server-eins
 FQDN=$MYHOSTNAME.$MYDOMAIN
