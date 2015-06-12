@@ -16,6 +16,15 @@ set -e
 ## Environment 
 RETVAL=0
 
+MYIP=172.16.105.133
+MYMASK=255.255.0.0
+MYNIC=eno16777736
+
+## Set DHCP
+DHCPSUBNET=172.16.105.0
+DHCPMASK=255.255.0.0
+NAMESERVER=${MYIP}
+DISTRO='CentOS-7.1-x86_64'
 
 ## Sanity checks
 
@@ -33,7 +42,7 @@ echo Disable firewall and SElinux
 cat << EOF > /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.120.0.15 server-eins.ams1.lastminute.com server-eins
+${MYIP} server-eins.ams1.lastminute.com server-eins
 
 EOF
 
@@ -47,25 +56,25 @@ server-eins.ams1.lastminute.com
 
 EOF
 
-cat << EOF > /etc/sysconfig/network-scripts/ifcfg-XXXXXXXXXX
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-${MYNIC}
 TYPE=Ethernet
 BOOTPROTO=static
-IPADDR=10.120.0.15
-NETMASK=255.255.0.0
+IPADDR=${MYIP}
+NETMASK=${MYMASK}
+DEVICE=${MYNIC}
 DEFROUTE=yes
 IPV4_FAILURE_FATAL=no
 IPV6INIT=yes
 IPV6_AUTOCONF=yes
 IPV6_DEFROUTE=yes
 IPV6_FAILURE_FATAL=no
-NAME=XXXXXXXXXX
-UUID=XXXXXXXXXXXXXX
 ONBOOT=yes
-HWADDR=XXXXXXXXXXXXXXX
-PEERDNS=yes
 PEERROUTES=yes
 IPV6_PEERDNS=yes
 IPV6_PEERROUTES=yes
+ONBOOT=yes
+UUID="00b29c34-d86c-4455-9e30-b013b204a39d"
+IPV6INIT=yes
 
 EOF
 
@@ -74,20 +83,127 @@ EOF
 cat << EOF > /etc/sysctl.d/ipv6.conf
 # Disable IPv6 interface but leave stack up
 net.ipv6.conf.all.disable_ipv6 = 1
-net.ipv6.conf.XXXXXXXXX.disable_ipv6 = 1
+net.ipv6.conf.${MYNIC}.disable_ipv6 = 1
 
 EOF
 
 sysctl -p
 
-## Add user 
+ifdown ${MYNIC}
+ifup ${MYNIC}
+
+## Disable CentOS repos as we have not inet connection
+cd /etc/yum.repos.d
+
+if (ls *.repo); then
+rename .repo .disabled *.repo
+cd
+fi
+
+## Add user
 if ! (id syseng) ;then useradd -m -p password syseng ; fi
 
 
-## Execute 
+## Get CentOS 7 repo setup locally and then install ipa server
     
-echo 'At this point in time you need you to attach the usbstick to the laptop and cp the isos to /home/syseng/Downloads/'
-echo '/home/syseng/Downloads/CentOS-7-x86_64-Everything-1503-01.iso'
+echo 'Attach the usbstick to the laptop and I will cp CentOS 7 DVD packages'
+echo "Press y when this is done and I will carry on building this shit? "
+  read -p '#> ' ANSWER
+    if [ ${ANSWER} != y ] ; then
+      echo Aborting
+      exit 1
+    fi
+
+#umount /dev/cdrom || :
+#mount /dev/cdrom /mnt && mkdir -p /var/www/html/repos/centos/7/dvd/ && echo XXXXX cp -rv /mnt/. /var/www/html/repos/centos/7/dvd/
+#find /var/www/html/ -type d -exec chmod 755 {} \;
+
+cat << EOF > /etc/yum.repos.d/centos7-dvd.repo
+[centos7-dvd]
+name=centos7 dvd repo
+enabled=1
+baseurl=file:///var/www/html/repos/centos/7/dvd/
+gpgcheck=0
+
+EOF
+
+yum clean all
+yum repolist
+yum install -y ipa-server bind bind-dyndb-ldap
+
+#echo Installing IPA master
+#ipa-server-install --admin-password=password --ds-password=password --hostname=server-eins.ams1.lastminute.com --realm=AMS1.LASTMINUTE.COM --domain=ams1.lastminute.com --no-forwarders --setup-dns --no-ntp --idstart=50000 --mkhomedir  --ip-address=${MYIP} --unattended
+
+echo Start all IPA services on boot
+systemctl enable ipa.service
+
+echo 'Hows IPA looking?'
+cat /etc/ipa/default.conf
+ipactl status || exit 1
+
+echo TFTP DHCP setup
+
+echo Install packages
+yum install -y dhcp syslinux tftp-server xinetd 
+
+
+echo TFTP SETUP
+cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
+cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
+mkdir -p /var/lib/tftpboot/{boot,pxelinux.cfg}
+cp /var/www/html/repos/centos/7/dvd/images/pxeboot/vmlinuz  /var/lib/tftpboot/boot/${DISTRO}-vmlinuz
+cp /var/www/html/repos/centos/7/dvd/images/pxeboot/initrd.img  /var/lib/tftpboot/boot/${DISTRO}-initrd.img
+
+cat << EOF > /var/lib/tftpboot/pxelinux.cfg/default
+DEFAULT ${DISTRO}
+LABEL ${DISTRO}
+    KERNEL boot/${DISTRO}-vmlinuz
+    APPEND initrd=boot/${DISTRO}-initrd.img inst.ks=http://${MYIP}/kickstart/\${1}-ks devfs=nomount ip=dhcp
+
+EOF
+
+echo XINETD SETUP
+sed 's/disable[ \t=]*yes/disable     = no/' /etc/xinetd.d/tftp -i
+systemctl enable xinetd.service
+systemctl restart xinetd.service
+
+echo DHCP SETUP
+cat << EOF > /etc/dhcp/dhcpd.conf
+# DHCP options
+allow booting;
+allow bootp;
+omapi-port 7911;
+
+option domain-name "ams1.lastminute.com";
+option domain-name-servers ${NAMESERVER};
+default-lease-time 600;
+max-lease-time 7200;
+ddns-update-style none;
+authoritative;
+log-facility local7;
+
+# Subnet settings
+subnet $DHCPSUBNET netmask $DHCPMASK {
+    next-server $MYIP;
+    filename "pxelinux.0";
+    option domain-name-servers $NAMESERVER;
+}
+
+# Host declaration example
+#host apex {
+#   option host-name "apex.example.com";
+#   hardware ethernet 00:A0:78:8E:9E:AA;
+#   fixed-address 172.16.105.4;
+#}
+
+EOF
+
+systemctl enable dhcpd.service
+systemctl restart dhcpd.service
+
+xxxxxxxxx GOOD TO HERE
+
+echo 'Attach the usbstick to the laptop and cp these isos to /home/syseng/Downloads/'
 echo '/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD1.iso'
 echo '/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD2.iso'
 echo "Press y when this is done and I will carry on building this shit? "
@@ -99,31 +215,13 @@ echo "Press y when this is done and I will carry on building this shit? "
 
 cat << EOF >> /etc/fstab
 ## isos
-/home/syseng/Downloads/CentOS-7-x86_64-Everything-1503-01.iso /var/www/html/repos/centos/7/iso/  iso9660 defaults 0 0
-/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD1.iso /var/www/html/repos/centos/6/iso1/         iso9660 defaults 0 0
-/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD2.iso /var/www/html/repos/centos/6/iso2          iso9660 defaults 0 0
+/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD1.iso /var/www/html/repos/centos/6/dvd1/         iso9660 defaults 0 0
+/home/syseng/Downloads/CentOS-6.6-x86_64-bin-DVD2.iso /var/www/html/repos/centos/6/dvd2          iso9660 defaults 0 0
 
 EOF
 
 echo mounting isos
 mount -a || exit 1
-
-cat << EOF > /etc/yum.repos.d/centos7-dvd.repo
-[centos7-dvd]
-name=centos7 dvd repo
-enabled=1
-baseurl=file:///var/www/html/repos/centos/7/iso/
-gpgcheck=0
-
-EOF
-
-yum clean all
-yum repolist
-
-echo configuring web server for repos
-yum install -y httpd 
-systemctl enable httpd.service
-systemctl restart httpd.service
 
 echo Dont forget the gems for r10k
 
@@ -159,24 +257,9 @@ yum install -y httpd
 systemctl enable httpd.service
 systemctl restart httpd.service
 
-echo Do NOT install any packages/updates for CentOS OS from the inet
-echo Use only the provided isos until we get pulp up and running.
-
-echo Installing IPA master
-ipa-server-install --admin-password=password --ds-password=password --hostname=server-eins.ams1.lastminute.com \ 
-realm=AMS1.LASTMINUTE.COM -domain=ams1.lastminute.com --no-forwarders --setup-dns --no-ntp --idstart=50000 \
---mkhomedir  --unattended
-
-echo Start all IPA services on boot
-systemctl enable ipa.service
-
-echo 'Hows IPA looking?
-ipactl status
-cat /etc/ipa/default
-
-echo You should now reboot 
 
 exit ${RETVAL}
 # EOF
 
 ChangeLog: 
+
