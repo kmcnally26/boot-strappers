@@ -95,16 +95,7 @@ ifdown ${MYNIC}
 ifup ${MYNIC}
 
 ## Disable CentOS repos as we have not inet connection
-cd /etc/yum.repos.d
-
-if (ls *.repo); then
-rename .repo .disabled *.repo
-cd
-fi
-
-## Add user
-if ! (id syseng) ;then useradd -m -p password syseng ; fi
-
+rm -f /etc/yum.repos.d/*.repo
 
 ## Get CentOS 7 repo setup locally and then install ipa server
     
@@ -214,6 +205,9 @@ echo "Press y when this is done and I will carry on building this shit? "
       echo Aborting
       exit 1
     fi
+
+## Add user
+if ! (id syseng) ;then useradd -m -p password syseng ; fi
 
 cat << EOF >> /etc/fstab
 ## isos
