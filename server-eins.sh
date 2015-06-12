@@ -95,7 +95,7 @@ ifdown ${MYNIC}
 ifup ${MYNIC}
 
 ## Disable CentOS repos as we have not inet connection
-rm -f /etc/yum.repos.d/*.repo
+rm -f /etc/yum.repos.d/CentOS*.repo
 
 ## Get CentOS 7 repo setup locally and then install ipa server
     
