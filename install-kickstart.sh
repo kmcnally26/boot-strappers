@@ -30,9 +30,6 @@ NAMESERVER=172.16.105.131
 ## Set distro
 DISTRO='CentOS-7.1-x86_64'
 
-## Set http path
-DOCROOT='/var/www/html/kickstart'
-
 clear
 echo "MYIP=$MYIP"
 echo "MYHOSTNAME=$MYHOSTNAME"
@@ -41,8 +38,7 @@ echo "FQDN=$MYHOSTNAME.$MYDOMAIN"
 echo "DHCPSUBNET=$DHCPSUBNET"
 echo "DHCPMASK=$DHCPMASK"
 echo "NAMESERVER=$NAMESERVER"
-echo "DISTRO=$DISTRO"
-echo "DOCROOT=$DOCROOT"
+echo "DISTRO=$DISTRO 
 echo "Shall I carry on? "
   read -p '#> ' ANSWER
     if [ ${ANSWER} != y ] ; then
@@ -68,12 +64,12 @@ yum install dhcp syslinux tftp-server xinetd httpd vim -y
 
 
 echo HTTP MEDIA SETUP - MOUNTED ONLY
-mkdir -p ${DOCROOT}/centos
-mount -o loop /dev/cdrom ${DOCROOT}/centos
+mkdir -p /var/www/html/kickstart/centos
+mount -o loop /dev/cdrom /var/www/html/kickstart/centos
 cat << EOF > /etc/httpd/conf.d/kickstart.conf
 <VirtualHost *:80>
     ServerName ${FQDN}
-    DocumentRoot ${DOCROOT}
+    DocumentRoot /var/www/html/kickstart
 </VirtualHost>
 EOF
 
@@ -85,8 +81,8 @@ echo TFTP SETUP
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
 mkdir -p /var/lib/tftpboot/boot
-cp ${DOCROOT}/centos/images/pxeboot/vmlinuz  /var/lib/tftpboot/boot/${DISTRO}-vmlinuz
-cp ${DOCROOT}/centos/images/pxeboot/initrd.img  /var/lib/tftpboot/boot/${DISTRO}-initrd.img
+cp /var/www/html/kickstart/centos/images/pxeboot/vmlinuz  /var/lib/tftpboot/boot/${DISTRO}-vmlinuz
+cp /var/www/html/kickstart/centos/images/pxeboot/initrd.img  /var/lib/tftpboot/boot/${DISTRO}-initrd.img
 
 cat << EOF > /var/lib/tftpboot/pxelinux.cfg/default
 DEFAULT ${DISTRO}
