@@ -69,7 +69,7 @@ TYPE=Ethernet
 EOF
 
 echo Installing packages
-#yum install -y ipa-server bind bind-dyndb-ldap
+yum install -y ipa-server bind bind-dyndb-ldap
 
 echo Installing IPA master
 ipa-server-install --admin-password=$PASSWORD --ds-password=$PASSWORD --hostname=$FQDN \
