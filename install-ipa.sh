@@ -16,7 +16,8 @@ set -e
 ## Environment 
 RETVAL=0
 
-MYIP=172.16.105.133
+MYIP=172.16.105.162
+MYNIC=eno16777736
 MYDOMAIN=ams1.lastminute.com
 MYHOSTNAME=server-eins
 FQDN=$MYHOSTNAME.$MYDOMAIN
@@ -54,26 +55,46 @@ $FQDN
 
 EOF
 
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-$MYNIC
+NAME=$MYNIC
+DEVICE=$MYNIC
+ONBOOT=yes
+NETBOOT=yes
+IPV6INIT=yes
+BOOTPROTO=static
+IPADDR=$MYIP
+PREFIX=24
+TYPE=Ethernet
+
+EOF
+
 echo Installing packages
-yum install -y ipa-server bind bind-dyndb-ldap
+#yum install -y ipa-server bind bind-dyndb-ldap
 
 echo Installing IPA master
-ipa-server-install --admin-password=$PASSWORD --ds-password=$PASSWORD --hostname=$MYHOSTNAME \
+ipa-server-install --admin-password=$PASSWORD --ds-password=$PASSWORD --hostname=$FQDN \
 --realm=$MYREALM --domain=$MYDOMAIN --no-forwarders --setup-dns --no-ntp --idstart=50000 \
 --mkhomedir  --ip-address=${MYIP} --unattended
 
 echo Start all IPA services on boot
 systemctl enable ipa.service
 
-echo 'Hows IPA looking?'
+clear
+echo 'IPA is now on configured with these settings'
 cat /etc/ipa/default.conf
+
+echo 
+echo
+echo 'All services are up and running'
 ipactl status
+
+echo
+echo 'Note: reboot system and check that IPA is up and running'
 
 exit ${RETVAL}
 # EOF
 
 ChangeLog: 
+2015-06-13 Tested. 
 
 At install the IP on the nic must match the IP in hosts or pki errors.
-
-
