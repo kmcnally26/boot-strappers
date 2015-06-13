@@ -35,6 +35,14 @@ echo Disable firewall and SElinux
 
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
 
+## Set IPv6 settings for IPA Samba AD trusts
+
+cat << EOF > /etc/sysctl.d/ipv6.conf
+# Disable IPv6 interface but leave stack up
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.${MYNIC}.disable_ipv6 = 1
+
+EOF
 
 ## Check network and hostname
 
