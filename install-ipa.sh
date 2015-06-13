@@ -44,6 +44,11 @@ net.ipv6.conf.${MYNIC}.disable_ipv6 = 1
 
 EOF
 
+sysctl -p
+
+ifdown ${MYNIC}
+ifup ${MYNIC}
+
 ## Check network and hostname
 
 cat << EOF > /etc/hosts
