@@ -30,7 +30,7 @@ RETVAL=0
   fi
   
 ## Create tree
-mkdir -pv /etc/puppet/{data,environments/production/{manifests/nodes,modules/test_class/{files,manifests,templates}}}
+mkdir -pv /etc/puppet/{data,environments/production/{manifests/nodes,modules/{files,manifests,templates}}}
 
 ## Test node def, hiera and resource
 cat << EOF > /etc/puppet/environments/production/manifests/nodes/nodes.pp
