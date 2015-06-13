@@ -89,7 +89,7 @@ echo 'All services are up and running'
 ipactl status
 
 echo
-echo 'Note: reboot system and check that IPA is up and running'
+echo 'Note: reboot system and check that IPA is up and running and you should be good to go'
 
 exit ${RETVAL}
 # EOF
