@@ -89,6 +89,7 @@ net.ipv6.conf.${MYNIC}.disable_ipv6 = 1
 
 EOF
 
+
 sysctl -p
 
 ifdown ${MYNIC}
