@@ -89,9 +89,6 @@ ipa-server-install --admin-password=$PASSWORD --ds-password=$PASSWORD --hostname
 --realm=$MYREALM --domain=$MYDOMAIN --no-forwarders --setup-dns --no-ntp --idstart=50000 \
 --mkhomedir  --ip-address=${MYIP} --unattended
 
-echo Start all IPA services on boot
-systemctl enable ipa.service
-
 clear
 echo 'IPA is now on configured with these settings'
 cat /etc/ipa/default.conf
