@@ -28,7 +28,7 @@ DHCPMASK=255.255.255.0
 NAMESERVER=172.16.105.131
 
 ## Set distro and HTTP
-DISTRO='CentOS-7.1-x86_64'
+DISTRO='CentOS-7.0-1406-x86_64'
 KSDIR=kickstart
 PACKDIR=centos 
 DROOT=/var/www/html 
