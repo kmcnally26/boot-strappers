@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Desc: Build a Kickstart DHCP TFTP PXE server on a clean install.
-#
+# Requires INET access
 # Date: 2015-05-23
 # Author: <kevin.mcnally@lastminute.com>
 # System: RHEL7
