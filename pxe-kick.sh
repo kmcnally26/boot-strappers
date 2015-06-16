@@ -100,28 +100,8 @@ exec < /dev/tty3 > /dev/tty3
 /usr/bin/chvt 3
 (
 
-echo Moving CentOS repos to /opt
-#mv -f /etc/yum.repos.d/C* /opt
+## Scripted section
 
-echo Installing puppet client
-#yum -t -y -e 0 install puppet
-
-echo Configuring puppet
-cat << EOF > /etc/puppet/puppet.conf
-[main]
-logdir=/var/log/puppet
-vardir=/var/lib/puppet
-ssldir=/var/lib/puppet/ssl
-rundir=/var/run/puppet
-[agent]
-server=${PUPPET_MASTER}
-report=true
-pluginsync=true
-environment=prd
-EOF
-
-echo Requesting a puppet cert
-#puppet agent --waitforcert 10 --certname ${1} --server ${PUPPET_MASTER} --onetime --no-daemonize --test --ssldir /var/lib/puppet/ssl --report true --pluginsync true
 sync
 ) 2>&1 | tee /root/install.post.log
 %end
