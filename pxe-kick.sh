@@ -22,12 +22,12 @@ RETVAL=0
   fi
 
 ## Set build detail here
+MYIP=172.16.105.160
 KICKSTART_DIR=/var/www/html/kickstart
 PXELINUX_DIR=/var/lib/tftpboot/pxelinux.cfg
 DHCP_CONF_FILE=/etc/dhcp/dhcpd.conf
-PUPPET_MASTER=puppet.example.com
 ROOT_PW=password
-HTTPURL='http://172.16.105.160/kickstart/'
+HTTPURL=http://$MYIP/kickstart/
 
 
 echo Checking DHCP config for conflicting entries
@@ -96,13 +96,19 @@ cp -va /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
 /usr/bin/chvt 1
 ) 2>&1 | tee /mnt/sysimage/root/install.postnochroot.log
 %end
+
+
 %post
 exec < /dev/tty3 > /dev/tty3
 #changing to VT 3 so that we can see whats going on....
 /usr/bin/chvt 3
 (
 
+
+
 ## Scripted section
+
+
 
 sync
 ) 2>&1 | tee /root/install.post.log
@@ -121,7 +127,7 @@ LABEL linux
 
 EOF
 ## Rename file as needed by pxelinux
-mv -f ${PXELINUX_DIR}/01-${3,,} ${PXELINUX_DIR}/$( echo 01-${3,,} | sed 's/\:/\-/g')
+mv -f $PXELINUX_DIR/01-${3,,} $PXELINUX_DIR/$( echo 01-${3,,} | sed 's/\:/\-/g')
 
 
 echo Done
@@ -130,8 +136,8 @@ echo
 echo '##############################################################################'
 echo
 echo "Created PXE file: $PXELINUX_DIR/$( echo 01-${3,,} | sed 's/\:/\-/g')"
-echo "Created Kickstart file: $KICKSTART_DIR/$1-ks"
-echo "Added entry to ${DHCP_CONF_FILE} for ${1}"
+echo "Created Kickstart file: $HTTPURL/$1-ks"
+echo "Added entry to $DHCP_CONF_FILE for $1"
 echo
 
 exit ${RETVAL}
