@@ -22,7 +22,7 @@ MYDOMAIN=ams1.lastminute.com
 MYHOSTNAME=server-eins
 FQDN=$MYHOSTNAME.$MYDOMAIN
 NAMESERVER=$MYIP
-MYREALM=${MYHOSTNAME~~}
+MYREALM=${MYDOMAIN~~}
 PASSWORD=password
 
 ## Sanity checks
