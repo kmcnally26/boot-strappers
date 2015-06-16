@@ -66,11 +66,6 @@ $MYIP $FQDN $MYHOSTNAME
 
 EOF
 
-cat << EOF > /etc/resolv.conf
-nameserver $NAMESERVER
-
-EOF
-
 cat << EOF > /etc/hostname
 $FQDN
 
@@ -127,10 +122,13 @@ subnet $DHCPSUBNET netmask $DHCPMASK {
 #   fixed-address 172.16.105.4;
 #}
 EOF
-systemctl enable dhcpd.service
-systemctl restart dhcpd.service
+
 echo Downloading pxe-kick.sh
 curl -sf -o /root/pxe-kick.sh -L -k https://raw.githubusercontent.com/kmcnally26/boot-strappers/master/pxe-kick.sh
 chmod 755 /root/pxe-kick.sh
+
+systemctl enable dhcpd.service
+systemctl restart dhcpd.service
+
 exit ${RETVAL}
 # EOF
