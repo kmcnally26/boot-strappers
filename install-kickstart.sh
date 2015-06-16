@@ -7,9 +7,9 @@
 # System: RHEL7
 
 # Verbose output.
-set -x
+#set -x
 # Exit if anything fails
-#set -e
+set -e
 # Uncomment for no output.
 #exec > /dev/null
 
@@ -27,8 +27,11 @@ DHCPSUBNET=172.16.105.0
 DHCPMASK=255.255.255.0
 NAMESERVER=172.16.105.131
 
-## Set distro
+## Set distro and HTTP
 DISTRO='CentOS-7.1-x86_64'
+KSDIR=kickstart
+PACKDIR=centos 
+DROOT=/var/www/html 
 
 clear
 echo "MYIP=$MYIP"
@@ -64,14 +67,8 @@ yum install dhcp syslinux tftp-server xinetd httpd vim -y
 
 
 echo HTTP MEDIA SETUP - MOUNTED ONLY
-mkdir -p /var/www/html/kickstart/centos
-mount -o loop /dev/cdrom /var/www/html/kickstart/centos
-cat << EOF > /etc/httpd/conf.d/kickstart.conf
-<VirtualHost *:80>
-    ServerName ${FQDN}
-    DocumentRoot /var/www/html/kickstart
-</VirtualHost>
-EOF
+mkdir -p ${DROOT}/${KSDIR}
+mount -o loop /dev/cdrom  ${DROOT}/${PACKDIR}
 
 systemctl enable httpd.service
 systemctl restart httpd.service
@@ -80,15 +77,17 @@ systemctl restart httpd.service
 echo TFTP SETUP
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
-mkdir -p /var/lib/tftpboot/boot
-cp /var/www/html/kickstart/centos/images/pxeboot/vmlinuz  /var/lib/tftpboot/boot/${DISTRO}-vmlinuz
-cp /var/www/html/kickstart/centos/images/pxeboot/initrd.img  /var/lib/tftpboot/boot/${DISTRO}-initrd.img
+
+mkdir -p /var/lib/tftpboot/{boot,pxelinux.cfg}
+
+cp  ${DROOT}/${PACKDIR}/images/pxeboot/vmlinuz  /var/lib/tftpboot/boot/${DISTRO}-vmlinuz
+cp  ${DROOT}/${PACKDIR}/images/pxeboot/initrd.img  /var/lib/tftpboot/boot/${DISTRO}-initrd.img
 
 cat << EOF > /var/lib/tftpboot/pxelinux.cfg/default
 DEFAULT ${DISTRO}
 LABEL ${DISTRO}
     KERNEL boot/${DISTRO}-vmlinuz
-    APPEND initrd=boot/${DISTRO}-initrd.img inst.ks=http://${MYIP}/kickstart/\${1}-ks devfs=nomount ip=dhcp
+    APPEND initrd=boot/${DISTRO}-initrd.img inst.ks=http://${MYIP}/${KSDIR}/\${1}-ks devfs=nomount ip=dhcp
 
 EOF
 
