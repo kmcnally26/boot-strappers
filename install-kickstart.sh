@@ -42,6 +42,9 @@ echo "DHCPSUBNET=$DHCPSUBNET"
 echo "DHCPMASK=$DHCPMASK"
 echo "NAMESERVER=$NAMESERVER"
 echo "DISTRO=$DISTRO 
+echo "KICKURL=http://${MYIP}/${KSDIR}/XXXXXXX-ks
+echo "PACKURL=http://${MYIP}/${PACKDIR}/
+
 echo "Shall I carry on? "
   read -p '#> ' ANSWER
     if [ ${ANSWER} != y ] ; then
