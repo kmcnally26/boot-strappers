@@ -71,6 +71,8 @@ reboot
 
 network  --bootproto=dhcp --activate
 network  --hostname=${1}
+selinux --disabled
+firewall --disabled
 auth --enableshadow --passalgo=sha512
 rootpw  ${ROOT_PW}
 timezone Europe/London --isUtc
