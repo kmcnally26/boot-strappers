@@ -53,8 +53,9 @@ echo "Shall I carry on? "
 echo Disable firewall and SElinux
   if !( grep 'SELINUX=disabled' /etc/sysconfig/selinux ); then
     sed 's/SELINUX=[a-z]*/SELINUX=disabled/' /etc/sysconfig/selinux -i
-    setenforce 0
   fi
+  setenforce 0
+  
   systemctl disable firewalld && systemctl stop firewalld && iptables -F
 
 ## Check network and hostname
