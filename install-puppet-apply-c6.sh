@@ -68,7 +68,7 @@ EOF
 chmod 755 /usr/local/bin/papply
 
 ## Test papply
-papply
+papply --noop 
 
 exit ${RETVAL}
 # EOF
