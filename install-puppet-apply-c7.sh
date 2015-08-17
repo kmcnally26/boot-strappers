@@ -40,6 +40,22 @@ cat << EOF > /etc/puppet/environments/production/manifests/nodes/nodes.pp
   }
 EOF
 
+yum -y install hiera
+gem install hiera
+
+cat << EOF > /etc/hiera.yaml
+:backends:
+  - yaml
+  - puppet
+:hierarchy:
+  - global
+:yaml:
+  :datadir: /etc/puppet/data
+
+EOF
+
+ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
+
 ## Create papply
 cat << EOF > /usr/local/bin/papply
 #!/bin/bash
