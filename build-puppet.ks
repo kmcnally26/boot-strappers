@@ -112,7 +112,6 @@ yum clean all
 echo 'Setting up SSH keys for rsync .....................'
 sleep 2
 
-## Get the puppet config
 install -o root -g root -m 0700 -d /root/.ssh
 cat << EOF >/root/.ssh/known_hosts
 puppet,172.16.105.131 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0k9OReD53sFjAzWcAExyzMJXnGzN5tX0cE91AkxwK6i3Yf499a1jD/U3FPdFm388d1FMl697YpX0JeiKdC8vBHajHy/lrAmCgYbQFBQXz83oq7OvkGgBfM7o/Q12p+9Voqc36JA1r3ueaLZiomtM+uFJuN5Qz7nLTFff0RykeP0fmI0covXa4RVBq7EbxgvusxYX6BuJoIjPFgQi44SbM0uqakbykB8cDoOVJXffB5mECrTAW62LCltENDXBr8OoFo1lU30MmiTjL4/i6/BI0E3bbJJbH0supEFKchd+Aip498Gh65T87p7Q2g8d/qIc2NHZT7C1rPquqrz2rAPJ5w==
@@ -158,7 +157,7 @@ echo 'Setting up the puppetmaster ................'
 sleep 2
 mkdir -p /etc/puppet
 
-## This  works for my test
+## Get the puppet config
 rsync -az -e 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no' puppet.example.com:/etc/puppet/ /etc/puppet
 
 ## Or checkout from GIT
