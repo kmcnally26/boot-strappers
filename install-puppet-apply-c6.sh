@@ -31,6 +31,7 @@ RETVAL=0
   
 ## Create tree
 mkdir -pv /etc/puppet/{data,modules,manifests}
+ln -s /etc/puppet /root/puppet
 
 ## Test node def, hiera and resource
 cat << EOF > /etc/puppet/manifests/nodes.pp
@@ -40,8 +41,11 @@ cat << EOF > /etc/puppet/manifests/nodes.pp
   }
 EOF
 
+## Install hiera
 yum -y install hiera
-gem install hiera
+  if ! (gem list | grep hiera); then
+    gem install hiera --no-ri --no-rdoc
+  fi
 
 cat << EOF > /etc/hiera.yaml
 :backends:
@@ -69,6 +73,10 @@ chmod 755 /usr/local/bin/papply
 
 ## Test papply
 papply --noop 
+
+## Install puppet modules
+puppet module install puppetlabs-stdlib --modulepath=/etc/puppet/modules
+puppet module install puppetlabs-concat --modulepath=/etc/puppet/modules
 
 exit ${RETVAL}
 # EOF
