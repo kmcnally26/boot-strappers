@@ -24,7 +24,7 @@ RETVAL=0
   service iptables stop && chkconfig iptables off && iptables -F
 
 ## Repo and package
-  if ! (rpm -qa puppet); then
+  if ! (rpm -qa | grep puppet); then
     yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
     yum install -y puppet  
   fi
