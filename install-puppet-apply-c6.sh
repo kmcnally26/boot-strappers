@@ -30,10 +30,10 @@ RETVAL=0
   fi
   
 ## Create tree
-mkdir -pv /etc/puppet/{data,environments/production/{manifests/nodes,modules}}
+mkdir -pv /etc/puppet/{data,modules,manifests}
 
 ## Test node def, hiera and resource
-cat << EOF > /etc/puppet/environments/production/manifests/nodes/nodes.pp
+cat << EOF > /etc/puppet/manifests/nodes.pp
   node default {
 #  include .........
   Package { allow_virtual => false, }
@@ -62,7 +62,7 @@ cat << EOF > /usr/local/bin/papply
 ## $1 to allow for --noop
 
 ENV=production
-puppet apply  --modulepath=/etc/puppet/environments/\${ENV}/modules /etc/puppet/environments/\${ENV}/manifests/nodes/nodes.pp $1
+puppet apply  --modulepath=/etc/puppet/modules /etc/puppet/manifests/nodes.pp $1
 EOF
 
 chmod 755 /usr/local/bin/papply
