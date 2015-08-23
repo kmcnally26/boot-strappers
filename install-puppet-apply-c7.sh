@@ -40,7 +40,7 @@ cat << EOF > /etc/puppet/manifests/nodes.pp
   }
 EOF
 
-yum -y install hiera git
+yum -y install hiera git epel-release
 gem install hiera
 
 cat << EOF > /etc/hiera.yaml
