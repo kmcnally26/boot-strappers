@@ -42,7 +42,7 @@ cat << EOF > /etc/puppet/manifests/nodes.pp
 EOF
 
 ## Install hiera
-yum -y install hiera
+yum -y install hiera git
   if ! (gem list | grep hiera); then
     gem install hiera --no-ri --no-rdoc
   fi
