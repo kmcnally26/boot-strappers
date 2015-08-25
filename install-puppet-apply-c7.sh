@@ -4,24 +4,10 @@
 # Just set PUPPETMASTER var. Set hosts file. 
 # Date: 2015-06-09
 # Author: <kevin.mcnally@lastminute.com>
-# System: RHEL7 + Puppet 3.7
-
-# Verbose output.
-#set -x
-# Uncomment for no output.
-#exec > /dev/null 2>&1
-# Exit if anything fails
-set -e
+# System: RHEL7 + Puppet 
 
 ## Environment 
 RETVAL=0
-  
-## Disable firewall and SElinux 
-  if !( grep 'SELINUX=disabled' /etc/sysconfig/selinux ); then
-    sed 's/SELINUX=[a-z]*/SELINUX=disabled/' /etc/sysconfig/selinux -i 
-  fi
-
-  systemctl disable firewalld && systemctl stop firewalld && iptables -F
 
 ## Repo and package
   if ! (rpm -qa  | grep puppet); then
@@ -30,10 +16,10 @@ RETVAL=0
   fi
   
 ## Create tree
-mkdir -pv /etc/puppet/{data,manifests,modules}
+mkdir -pv /root/puppet/{data,manifests,modules}
 
 ## Test node def, hiera and resource
-cat << EOF > /etc/puppet/manifests/nodes.pp
+cat << EOF > /root/puppet/manifests/nodes.pp
   node default {
 #  include .........
   Package { allow_virtual => false, }
@@ -54,7 +40,7 @@ cat << EOF > /etc/hiera.yaml
 
 EOF
 
-ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
+ln -s /etc/hiera.yaml /root/puppet/hiera.yaml
 
 ## Create papply
 cat << EOF > /usr/local/bin/papply
@@ -62,7 +48,7 @@ cat << EOF > /usr/local/bin/papply
 ## $1 to allow for --noop
 
 ENV=production
-puppet apply  --modulepath=/etc/puppet/modules /etc/puppet/manifests/nodes.pp $1
+puppet apply  --modulepath=/root/puppet/modules /root/puppet/manifests/nodes.pp $1
 EOF
 
 chmod 755 /usr/local/bin/papply
