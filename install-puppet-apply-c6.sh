@@ -14,13 +14,6 @@ set -e
 
 ## Environment 
 RETVAL=0
-  
-## Disable firewall and SElinux 
-  if !( grep 'SELINUX=disabled' /etc/sysconfig/selinux ); then
-    sed 's/SELINUX=[a-z]*/SELINUX=disabled/' /etc/sysconfig/selinux -i 
-  fi
-
-  service iptables stop && chkconfig iptables off && iptables -F
 
 ## Repo and package
   if ! (rpm -qa | grep puppet); then
