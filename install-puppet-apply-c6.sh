@@ -1,7 +1,6 @@
 #!/bin/bash
 #
 # Desc: Install basic puppet apply on CentOS 6. 
-# Just set PUPPETMASTER var. Set hosts file. 
 # Date: 2015-06-09
 # Author: <kevin.mcnally@lastminute.com>
 # System: RHEL6 + Puppet 3.7
@@ -30,11 +29,10 @@ RETVAL=0
   fi
   
 ## Create tree
-mkdir -pv /etc/puppet/{data,modules,manifests}
-ln -s /etc/puppet /root/puppet
+mkdir -pv /root/puppet/{data,modules,manifests}
 
 ## Test node def, hiera and resource
-cat << EOF > /etc/puppet/manifests/nodes.pp
+cat << EOF > /root/puppet/manifests/nodes.pp
   node default {
 #  include .........
   Package { allow_virtual => false, }
@@ -54,11 +52,11 @@ cat << EOF > /etc/hiera.yaml
 :hierarchy:
   - global
 :yaml:
-  :datadir: /etc/puppet/data
+  :datadir: /root/puppet/data
 
 EOF
 
-ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
+ln -s /etc/hiera.yaml /root/puppet/hiera.yaml
 
 ## Create papply
 cat << EOF > /usr/local/bin/papply
@@ -66,7 +64,7 @@ cat << EOF > /usr/local/bin/papply
 ## $1 to allow for --noop
 
 ENV=production
-puppet apply  --modulepath=/etc/puppet/modules /etc/puppet/manifests/nodes.pp $1
+puppet apply  --modulepath=/root/puppet/modules /root/puppet/manifests/nodes.pp $1
 EOF
 
 chmod 755 /usr/local/bin/papply
@@ -75,8 +73,8 @@ chmod 755 /usr/local/bin/papply
 papply --noop 
 
 ## Install puppet modules
-puppet module install puppetlabs-stdlib --modulepath=/etc/puppet/modules
-puppet module install puppetlabs-concat --modulepath=/etc/puppet/modules
+puppet module install puppetlabs-stdlib --modulepath=/root/puppet/modules
+puppet module install puppetlabs-concat --modulepath=/root/puppet/modules
 
 exit ${RETVAL}
 # EOF
