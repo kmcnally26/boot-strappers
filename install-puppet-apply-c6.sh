@@ -5,13 +5,6 @@
 # Author: <kevin.mcnally@lastminute.com>
 # System: RHEL6 + Puppet 3.7
 
-# Verbose output.
-#set -x
-# Uncomment for no output.
-#exec > /dev/null 2>&1
-# Exit if anything fails
-set -e
-
 ## Environment 
 RETVAL=0
 
