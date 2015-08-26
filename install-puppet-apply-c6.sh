@@ -44,6 +44,11 @@ EOF
 
 ln -s /etc/hiera.yaml /root/puppet/hiera.yaml
 
+cat << EOF > /root/puppet/data/global.yaml
+---
+
+EOF
+
 ## Create papply
 cat << EOF > /usr/local/bin/papply
 #!/bin/bash
