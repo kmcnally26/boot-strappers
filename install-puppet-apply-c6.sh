@@ -55,7 +55,7 @@ cat << EOF > /usr/local/bin/papply
 ## $1 to allow for --noop
 
 ENV=production
-puppet apply --test --modulepath=/root/puppet/modules /root/puppet/manifests/nodes.pp $1
+puppet apply --test --modulepath=/root/puppet/modules /root/puppet/manifests/nodes.pp \$1
 EOF
 
 chmod 755 /usr/local/bin/papply
