@@ -20,7 +20,7 @@ MYIP=10.120.0.15
 MYMASK=255.255.0.0
 MYNIC=enp0s25    ## As per HP laptop LMN London office
 
-## Set DHCP
+## Set DHCP - for single subnet 
 DHCPSUBNET=10.120.0.0
 DHCPMASK=255.255.0.0
 NAMESERVER=${MYIP}
