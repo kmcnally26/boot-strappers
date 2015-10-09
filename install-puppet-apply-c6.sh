@@ -8,6 +8,8 @@
 ## Environment 
 RETVAL=0
 
+set -e
+
 ## Repo and package
   if ! (rpm -qa | grep puppet); then
     yum install -y https://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
