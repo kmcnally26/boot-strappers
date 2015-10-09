@@ -6,6 +6,8 @@
 # Author: <kevin.mcnally@lastminute.com>
 # System: RHEL7 + Puppet 
 
+set -e
+
 ## Environment 
 RETVAL=0
 
