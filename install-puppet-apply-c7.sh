@@ -21,7 +21,7 @@ RETVAL=0
 mkdir -pv /root/puppet/{data,manifests,modules}
 
 ## Test node def, hiera and resource
-cat << EOF > /root/puppet/manifests/nodes.pp
+cat << EOF > /root/puppet/manifests/site.pp
   node default {
 #  include .........
   Package { allow_virtual => false, }
@@ -50,7 +50,7 @@ cat << EOF > /usr/local/bin/papply
 ## $1 to allow for --noop
 
 ENV=production
-puppet apply --test --modulepath=/root/puppet/modules /root/puppet/manifests/nodes.pp \$1
+puppet apply --test --modulepath=/root/puppet/modules /root/puppet/manifests/site.pp \$1
 EOF
 
 chmod 755 /usr/local/bin/papply
