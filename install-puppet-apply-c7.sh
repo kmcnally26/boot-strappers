@@ -38,7 +38,7 @@ cat << EOF > /etc/hiera.yaml
 :hierarchy:
   - global
 :yaml:
-  :datadir: /etc/puppet/data
+  :datadir: /root/puppet/data
 
 EOF
 
