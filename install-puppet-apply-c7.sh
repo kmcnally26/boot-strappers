@@ -18,14 +18,15 @@ RETVAL=0
   fi
   
 ## Create tree
-mkdir -pv /root/puppet/{data,manifests,modules}
+mkdir -pv /etc/puppet/{data,manifests,modules}
 
 ## Test node def, hiera and resource
-cat << EOF > /root/puppet/manifests/site.pp
+cat << EOF > /etc/puppet/manifests/site.pp
   node default {
 #  include .........
+}
+
   Package { allow_virtual => false, }
-  }
 EOF
 
 yum -y install hiera git epel-release
@@ -38,11 +39,11 @@ cat << EOF > /etc/hiera.yaml
 :hierarchy:
   - global
 :yaml:
-  :datadir: /root/puppet/data
+  :datadir: /etc/puppet/data
 
 EOF
 
-ln -s /etc/hiera.yaml /root/puppet/hiera.yaml
+ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
 
 ## Create papply
 cat << EOF > /usr/local/bin/papply
@@ -50,7 +51,7 @@ cat << EOF > /usr/local/bin/papply
 ## $1 to allow for --noop
 
 ENV=production
-puppet apply --test --modulepath=/root/puppet/modules /root/puppet/manifests/site.pp \$1
+puppet apply --test --modulepath=/etc/puppet/modules /etc/puppet/manifests/site.pp \$1
 EOF
 
 chmod 755 /usr/local/bin/papply
