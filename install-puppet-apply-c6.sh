@@ -17,7 +17,7 @@ set -e
   fi
   
 ## Create tree
-mkdir -pv /root/puppet/{data,modules,manifests}
+mkdir -pv /etc/puppet/{data,modules,manifests}
 
 ## Test node def, hiera and resource
 cat << EOF > /root/puppet/manifests/nodes.pp
@@ -44,9 +44,9 @@ cat << EOF > /etc/hiera.yaml
 
 EOF
 
-ln -s /etc/hiera.yaml /root/puppet/hiera.yaml
+ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
 
-cat << EOF > /root/puppet/data/global.yaml
+cat << EOF > /etc/puppet/data/global.yaml
 ---
 
 EOF
@@ -57,7 +57,7 @@ cat << EOF > /usr/local/bin/papply
 ## $1 to allow for --noop
 
 ENV=production
-puppet apply --test --modulepath=/root/puppet/modules /root/puppet/manifests/nodes.pp \$1
+puppet apply --test --modulepath=/etc/puppet/modules /etc/puppet/manifests/nodes.pp \$1
 EOF
 
 chmod 755 /usr/local/bin/papply
@@ -66,8 +66,8 @@ chmod 755 /usr/local/bin/papply
 papply --noop 
 
 ## Install puppet modules
-puppet module install puppetlabs-stdlib --modulepath=/root/puppet/modules
-puppet module install puppetlabs-concat --modulepath=/root/puppet/modules
+puppet module install puppetlabs-stdlib --modulepath=/etc/puppet/modules
+puppet module install puppetlabs-concat --modulepath=/etc/puppet/modules
 
 exit ${RETVAL}
 # EOF
