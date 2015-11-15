@@ -46,7 +46,7 @@ EOF
 ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
 
 ## Create papply
-cat << EOF > /usr/local/bin/papply
+cat << EOF > /usr/local/sbin/papply
 #!/bin/bash
 ## $1 to allow for --noop
 
@@ -54,7 +54,7 @@ ENV=production
 puppet apply --test --modulepath=/etc/puppet/modules /etc/puppet/manifests/site.pp \$1
 EOF
 
-chmod 755 /usr/local/bin/papply
+chmod 755 /usr/local/sbin/papply
 
 ## Test papply
 papply --noop
